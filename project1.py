@@ -19,14 +19,15 @@ def load_seqs(seq_file, format):
     return ids, seqs
 
 
-POPULATION_SIZE = 100
+POPULATION_SIZE = 60
 MAX_PADDING = 5
 GAP_PENALTY = -10
 UNKNOWN_SCORE = -1
 CROSSOVER_PROBABILITY = 0.8
 N_GENERATIONS = 100
 N_CYCLES = 10
-FILENAME = "test_gen_n_100"
+RUN_DATA_FILENAME = "test_gen_n_15"
+MSA_OUT_FILENAME = "outfile_15"
 
 #   main 
 #first step is to initialize the organisms into a template alignement
@@ -36,6 +37,9 @@ standard_msa = MyAlign(lseqs = input_seqs, al_type = "protein")
 
 #create the first generation
 submat = SubstMatrix(submat_file = "blosum62.mat", gap_penalty= GAP_PENALTY, unknown_score = UNKNOWN_SCORE)
+
+#create the best MSA output file
+Generation.create_output_file(MSA_OUT_FILENAME)
 
 #store information of all cycles
 all_cycles_dict = {}
@@ -61,10 +65,12 @@ for i in range(1,N_CYCLES+1):
     generations_dict["n_cycles"] = gen_1.get_current_generation()
     generations_dict["identity_percentage"] = gen_1.get_fitness_identity_percentage()
     generations_dict["runtime"] = "NA"
+    gen_1.output_best_MSA(MSA_OUT_FILENAME)
 
     all_cycles_dict[f"cycle{i}"] = generations_dict
 
-create_xlsx(FILENAME, all_cycles_dict)
+
+create_xlsx(RUN_DATA_FILENAME, all_cycles_dict)
 
     
 

@@ -98,6 +98,7 @@ class Generation:
 #       now we can update the current generation
         self.generation_max_SP = next_gen_SP_max
         self.population = nextgen_dict
+        self.is_population_better()
         #self.generations_scores[int(len(self.generations_scores))] = self.get_generation_max_fitness()
 
 
@@ -329,10 +330,12 @@ class Generation:
     def is_population_better(self):
         """
         Checks if the current population has a significantly higher score than the previous
-        Returns True if it has a signifficant increase and returns False if it doesn't
+        Returns True if the percentage of individuals with top score is higher than the crossover probability
         
         """
-        pass
+        if self.get_fitness_identity_percentage() > self.crossover_probability:
+            self.stop = True
+
     def get_current_generation(self):
         """
         Retrieves the identifier of the current generation
@@ -390,3 +393,30 @@ class Generation:
     
     def check_status(self):
         return self.stop 
+    
+    @staticmethod
+    def create_output_file(output_name):
+        """
+        creates an output file to store the best MSAs
+        
+        :param output_name: The name of the output file to be created
+        """
+        with open(f"{output_name}.txt", "w") as out:
+            out.write("##### Best MSAs in all Cycles #####" + "\n")
+            out.write("\n")
+    
+    def output_best_MSA(self, output_name):
+        """
+        Retrieves the best MSA of the current generataion
+        Appends it to a output file
+        
+        :param output_name: the name of the output file
+        """
+        best_MSA = self.population["MSA1"]["alignement"]
+        best_MSA_seqs = best_MSA.get_seqs()
+        with open(f"{output_name}.txt", "a") as out:
+            out.write("MSA score - " + str(self.generation_max_SP) + "\n")
+            for seq in best_MSA_seqs:
+                out.write(seq + "\n")
+            for _ in range(3):
+                out.write("\n")
