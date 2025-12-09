@@ -1,3 +1,4 @@
+import time
 from Bio import SeqIO
 from myalign import MyAlign
 from generation import Generation
@@ -45,6 +46,7 @@ Generation.create_output_file(MSA_OUT_FILENAME)
 all_cycles_dict = {}
 #repeat for n cycles starting in 1
 for i in range(1,N_CYCLES+1):
+    init_time = time.time()
     #for each cycle the generation must be reset
     gen_1 = Generation(standard_msa, POPULATION_SIZE, MAX_PADDING, submat, CROSSOVER_PROBABILITY)
     gen_1_population = gen_1.get_population()
@@ -61,10 +63,12 @@ for i in range(1,N_CYCLES+1):
         if gen_1.check_status():
             break
         gen_1.update_generation()
-    
+    end_time = time.time()
+    elapsed_time = end_time - init_time
+#   store results
     generations_dict["n_cycles"] = gen_1.get_current_generation()
     generations_dict["identity_percentage"] = gen_1.get_fitness_identity_percentage()
-    generations_dict["runtime"] = "NA"
+    generations_dict["runtime"] = elapsed_time
     gen_1.output_best_MSA(MSA_OUT_FILENAME)
 
     all_cycles_dict[f"cycle{i}"] = generations_dict

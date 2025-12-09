@@ -57,7 +57,7 @@ def create_worksheet(workbook_instance, pagename):
     worksheet.write("E1","NA")
     worksheet.write("F1","N_CYCLES")
     worksheet.write("G1","RUN_TIME")
-    worksheet.write("H1","MSA_IDENTTITY")
+    worksheet.write("H1","MSA_IDENTITY")
 
     return worksheet
 
